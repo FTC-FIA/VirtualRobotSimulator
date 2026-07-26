@@ -148,9 +148,9 @@ public abstract class OpMode extends VirtualRobotController.OpModeBase {
     }
 
     /**
-     * Reset the start time to zero.
+     * Reset the runtime to zero, by setting the startTime to the current system time.
      */
-    public void resetStartTime() {
+    public void resetRuntime() {
         startTime = System.nanoTime();
     }
 
