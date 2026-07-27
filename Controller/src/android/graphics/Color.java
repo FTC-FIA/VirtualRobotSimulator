@@ -24,6 +24,15 @@ public class Color {
         hsv[2] = (float)color.getBrightness();
     }
 
+    /**
+     * From vibeacademy fork of Beta8397 virtual_robot, under Apache v2 license.
+     * @param color
+     * @param hsv
+     */
+    public static void colorToHSV(int color, float[] hsv){
+        RGBToHSV(red(color), green(color), blue(color), hsv);
+    }
+
     public static int HSVToColor(float[] hsv){
         javafx.scene.paint.Color color = javafx.scene.paint.Color.hsb(hsv[0], hsv[1], hsv[2]);
         int red = (int)Math.floor(256.0*color.getRed());

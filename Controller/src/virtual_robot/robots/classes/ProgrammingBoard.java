@@ -42,6 +42,7 @@ public class ProgrammingBoard extends VirtualBot {
     private PassiveColorSensorImpl colorSensor = null;
     private ServoImpl servo = null;
     private DigitalChannelImpl digitalChannel = null;
+    private TouchSensorImpl touchSensor = null;
     private AnalogInput analogInput = null;
     private PassiveDistanceSensorImpl distanceSensor = null;
 
@@ -106,6 +107,7 @@ public class ProgrammingBoard extends VirtualBot {
         colorSensor = (PassiveColorSensorImpl)hardwareMap.colorSensor.get("sensor_color_distance");
         servo = (ServoImpl)hardwareMap.servo.get("servo");
         digitalChannel = (DigitalChannelImpl) hardwareMap.get(DigitalChannel.class, "touch_sensor");
+        touchSensor = (TouchSensorImpl) hardwareMap.get(TouchSensor.class, "touch_sensor");
         analogInput = hardwareMap.get(AnalogInput.class, "pot");
         distanceSensor = (PassiveDistanceSensorImpl)hardwareMap.get(PassiveDistanceSensorImpl.class, "sensor_color_distance");
         hardwareMap.setActive(false);
@@ -131,6 +133,7 @@ public class ProgrammingBoard extends VirtualBot {
         hardwareMap.put("sensor_color_distance", new PassiveColorSensorImpl());
         hardwareMap.put("servo", new ServoImpl());
         hardwareMap.put("touch_sensor", new DigitalChannelImpl());
+        hardwareMap.put("touch_sensor", new TouchSensorImpl());
         hardwareMap.put("pot", new AnalogInput(5.0));
         hardwareMap.put("sensor_color_distance", new PassiveDistanceSensorImpl(50, 250,
                 50, 250));
@@ -143,7 +146,10 @@ public class ProgrammingBoard extends VirtualBot {
         imu.updateHeadingRadians(headingRadians);
         imuNew.updateHeadingRadians(headingRadians);
         colorSensor.updateColor(red, green, blue);
-        digitalChannel.update(!btnTouchPushed);
+        // using this local variable ensures that the DigitalChannel and TouchSensor have consistent readings
+        boolean buttonIsPushed = btnTouchPushed;
+        digitalChannel.update(!buttonIsPushed);
+        touchSensor.update(buttonIsPushed);
         distanceSensor.update(sldDist.getValue());
     }
 
