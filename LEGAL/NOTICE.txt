@@ -34,6 +34,8 @@ Virtual Robot, Copyright 2019 Team Beta
 
    PedroPathing (Copyright 2024, Pedro Pathing), Licensed under BSD 3-clause license
 
+   Ivy (Copyright 2026, Pedro Pathing), Licensed under BSD 3-clause license
+
 
 
 
