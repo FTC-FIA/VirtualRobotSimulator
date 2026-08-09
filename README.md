@@ -1,20 +1,10 @@
 # A 2D simulator to help beginning Java programmers learn to program for FTC Robotics.
 
-Now supports RoadRunner v1.0.1 AND PedroPathing v2.0.4, including facsimiles of the 
-Quickstart teamcode for each. For both RR and PP, tuning has been done for 
+Now supports RoadRunner v1.0.1 AND PedroPathing v2.1.12 (including Ivy v1.0.1), with facsimiles 
+of the quickstart teamcode provided for each. For both RR and PP, tuning has been done for 
 virtual_robot's MecDynamic robot configuration. This is the most physically realistic 
 robot configuration; the other configurations aren't expected to work well 
 with RR or PP. Example opmodes are included.
-
-Two new items (DEFAULT_DRIVE_MOTOR_TYPE and DEFAULT_BOT) are added to the Config.java class. 
-You can change these if you'd prefer that your favorite robot configuration use a different drive 
-motor type, or if you would prefer to have a different robot configuration appear when you first 
-run the app.
-
-If you want to continue using PedroPathing 1, you can use git to clone the repository, 
-then reset to commit #eca722d, as follows:
-
-git reset --hard eca722d
 
 Current game configuration is Decode. This includes goals and ramps, which serve as obstacles to robot
 travel. If you don't want these obstacles, then in the Config.java file, change the 
