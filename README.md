@@ -1,4 +1,15 @@
-# A 2D simulator to help beginning Java programmers learn to program for FTC Robotics.
+# Spark Squad Training Simulator
+This repo is intended for coding training for Spark Squad (FTC Team 26859, Ann Arbor, MI). 
+Others are welcome to copy and use it! 
+
+For Spark Squad team members: Your coaches will create ("fork") your own 
+version of the repo for you to play around with. Refer to the instructions
+you got from the coaches. Most of the original README (included below) is 
+not relevant at this point. (But feel free to explore if you're curious!)
+
+# Below is the original README from https://github.com/Beta8397/virtual_robot
+
+## A 2D simulator to help beginning Java programmers learn to program for FTC Robotics.
 
 Now supports RoadRunner v1.0.1 AND PedroPathing v2.1.12 (including Ivy v1.0.1), with facsimiles 
 of the quickstart teamcode provided for each. For both RR and PP, tuning has been done for 
