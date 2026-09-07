@@ -7,7 +7,8 @@ version of the repo for you to play around with. Refer to the instructions
 you got from the coaches. Most of the original README (included below) is 
 not relevant at this point. (But feel free to explore if you're curious!)
 
-# Below is the original README from https://github.com/Beta8397/virtual_robot
+# Below is the original README 
+from https://github.com/Beta8397/virtual_robot
 
 ## A 2D simulator to help beginning Java programmers learn to program for FTC Robotics.
 
