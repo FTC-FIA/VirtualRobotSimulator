@@ -42,6 +42,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotorImpl;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -55,6 +56,7 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,6 +76,7 @@ public class VirtualRobotController {
     @FXML private TextArea txtTelemetry;
     @FXML private CheckBox checkBoxGamePad1;
     @FXML private CheckBox checkBoxGamePad2;
+    @FXML private CheckBox cbxVirtualGamepad;
     @FXML private BorderPane borderPane;
     @FXML private CheckBox cbxShowPath;
     @FXML private CheckBox checkBoxAutoHuman;
@@ -91,8 +94,10 @@ public class VirtualRobotController {
     Gamepad gamePad2 = new Gamepad();
     GamePadHelper gamePadHelper = null;
     ScheduledExecutorService gamePadExecutorService = Executors.newSingleThreadScheduledExecutor();
+    ScheduledFuture<?> gamePadFuture = null;
 
     VirtualGamePadController virtualGamePadController = null;
+    private HBox virtualGamePadHBox = null;
 
     //Background Image and Field
     private final Image backgroundImage = Config.BACKGROUND;
@@ -183,28 +188,50 @@ public class VirtualRobotController {
         sldSystematicMotorError.valueProperty().addListener(sliderChangeListener);
         sldMotorInertia.valueProperty().addListener(sliderChangeListener);
 
+        cbxVirtualGamepad.setSelected(Config.USE_VIRTUAL_GAMEPAD);
+        setupGamePad();
+    }
+
+    @FXML
+    private void handleCbxVirtualGamepadAction(ActionEvent event){
+        setupGamePad();
+    }
+
+    private void setupGamePad(){
+        if (gamePadFuture != null) gamePadFuture.cancel(true);
+        if (gamePadHelper != null) gamePadHelper.quit();
+        Config.USE_VIRTUAL_GAMEPAD = cbxVirtualGamepad.isSelected();
         if (Config.USE_VIRTUAL_GAMEPAD){
-            vbxRight.getChildren().remove(hbxGamePads);
-//            checkBoxGamePad1.setVisible(false);
-//            checkBoxGamePad2.setVisible(false);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("virtual_gamepad.fxml"));
-            try{
-                HBox hbox = (HBox)loader.load();
-                virtualGamePadController = loader.getController();
-                virtualGamePadController.setVirtualRobotController(this);
-                borderPane.setBottom(hbox);
-            } catch (IOException e){
-                System.out.println("Virtual GamePad UI Failed to Load");
+            hbxGamePads.setVisible(false);
+            hbxGamePads.setManaged(false);
+            if (virtualGamePadHBox == null){
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("virtual_gamepad.fxml"));
+                try{
+                    virtualGamePadHBox = (HBox)loader.load();
+                    virtualGamePadController = loader.getController();
+                    virtualGamePadController.setVirtualRobotController(this);
+                } catch (IOException e){
+                    System.out.println("Virtual GamePad UI Failed to Load");
+                }
             }
+            borderPane.setBottom(virtualGamePadHBox);
             gamePadHelper = new VirtualGamePadHelper();
         } else {
+            hbxGamePads.setVisible(true);
+            hbxGamePads.setManaged(true);
             checkBoxGamePad1.setDisable(true);
             checkBoxGamePad1.setStyle("-fx-opacity: 1");
             checkBoxGamePad2.setDisable(true);
             checkBoxGamePad2.setStyle("-fx-opacity: 1");
+            borderPane.setBottom(null);
             gamePadHelper = new RealGamePadHelper();
         }
-        gamePadExecutorService.scheduleAtFixedRate(gamePadHelper, 0, 20, TimeUnit.MILLISECONDS);
+        gamePadFuture = gamePadExecutorService.scheduleAtFixedRate(gamePadHelper, 0, 20, TimeUnit.MILLISECONDS);
+
+        if (borderPane.getScene() != null && borderPane.getScene().getWindow() != null){
+            Stage stage = (Stage)borderPane.getScene().getWindow();
+            stage.sizeToScene();
+        }
     }
 
     /**
