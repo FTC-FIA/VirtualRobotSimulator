@@ -1018,11 +1018,12 @@ public class VirtualRobotController {
         private Thread[] rumbleThreads = new Thread[2];
 
         public RealGamePadHelper(){
-            controller = new ControllerManager(2);
+            controller = new ControllerManager();
             controller.initSDLGamepad();
         }
 
         public void run(){
+            controller.update();
             boolean connectionChanged = false;
             boolean configChanged = false;
 

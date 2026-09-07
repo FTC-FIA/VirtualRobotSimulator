@@ -2,6 +2,7 @@
   <library name="Jamepad">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/Jamepad.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gdx-jnigen-loader.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -12,6 +12,7 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../lib/Jamepad.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/gdx-jnigen-loader.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

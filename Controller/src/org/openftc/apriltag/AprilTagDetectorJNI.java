@@ -21,7 +21,7 @@
 
 package org.openftc.apriltag;
 
-import com.badlogic.gdx.jnigen.BuildConfig;
+
 
 import org.opencv.core.Mat;
 
