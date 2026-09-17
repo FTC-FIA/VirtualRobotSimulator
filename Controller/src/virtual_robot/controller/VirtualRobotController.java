@@ -506,6 +506,12 @@ public class VirtualRobotController {
     }
 
 
+    /**
+     * The robot currently selected in the Configurations dropdown, or null if none is set up yet.
+     * Used by SimStart (in the teamcode package) to place the robot before an Autonomous run.
+     */
+    public VirtualBot getBot(){ return bot; }
+
     public Pane getFieldPane(){ return fieldPane; }
 
     public World<Body> getWorld(){ return world; }

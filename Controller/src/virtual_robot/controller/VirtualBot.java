@@ -1,6 +1,7 @@
 package virtual_robot.controller;
 
 import com.qualcomm.robotcore.hardware.DcMotorControllerImpl;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -194,6 +195,49 @@ public abstract class VirtualBot {
      * joints to the chassis body, it shouldn't be necessary to explicitly position them.
      * @param arg
      */
+    /**
+     * Place the robot at a specific spot on the field, in FTC field coordinates.
+     *
+     * This is the programmatic equivalent of left-clicking the field to set position and
+     * right-clicking to set heading. It exists so that an Autonomous OpMode can start from
+     * exactly the same pose on every run, instead of wherever the mouse happened to land.
+     *
+     * Coordinates are the standard FTC convention:
+     *    - origin at the CENTER of the field
+     *    - +x to the right, +y up, both in INCHES, each running from -72 to +72
+     *    - heading in DEGREES, counterclockwise, 0 = facing +y (toward the back wall)
+     *
+     * The robot is constrained to stay inside the field walls, so a pose that would put the
+     * robot partly through a wall gets nudged back in.
+     *
+     * @param xInches        inches right of field center
+     * @param yInches        inches above field center
+     * @param headingDegrees degrees counterclockwise; 0 points along +y
+     */
+    public synchronized void setPosition(double xInches, double yInches, double headingDegrees) {
+        x = xInches * VirtualField.PIXELS_PER_INCH;
+        y = yInches * VirtualField.PIXELS_PER_INCH;
+        headingRadians = headingDegrees * Math.PI / 180.0;
+
+        constrainToBoundaries();
+
+        // setPosition is called from an OpMode, which runs on a background thread, but
+        // updateDisplay() touches the JavaFX scene graph and must run on the FX thread.
+        // (positionWithMouseClick below is already on the FX thread, so it calls it directly.)
+        Platform.runLater(this::updateDisplay);
+
+        if (chassisBody != null) {
+            Transform t = new Transform();
+            t.rotate(headingRadians);
+            t.translate(x / VirtualField.PIXELS_PER_METER, y / VirtualField.PIXELS_PER_METER);
+            chassisBody.setTransform(t);
+            chassisBody.setLinearVelocity(0, 0);
+            chassisBody.setAngularVelocity(0);
+            chassisBody.clearAccumulatedForce();
+            chassisBody.clearAccumulatedTorque();
+        }
+    }
+
     public synchronized void positionWithMouseClick(MouseEvent arg){
 
         if (arg.getButton() == MouseButton.PRIMARY) {
