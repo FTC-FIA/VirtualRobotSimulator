@@ -41,20 +41,22 @@ import org.firstinspires.ftc.teamcode.sim.SimStart;
 public class AutonPinpoint extends LinearOpMode {
 
     // Where to go, in field coordinates. The only numbers you change to go somewhere else.
-    static final double START_X = -12;          // left side against the red wall
-    static final double START_Y = -63;
+    static final double START_X = 63;          // left side against the red wall
+    static final double START_Y = -12;
     static final double START_HEADING = 180;    // facing -x, along the wall toward the zone
 
-    static final double LEAVE_X = -12;          // move 1: off the wall
-    static final double LEAVE_Y = -59;
+    static final double LEAVE_X = 59;          // move 1: off the wall
+    static final double LEAVE_Y = -12;
+
 
     static final double PARK_X = -19;           // move 2: into the loading zone
     static final double PARK_Y = -59;
 
     // How we drive. One speed the whole way, same as the timed version.
     static final double DRIVE_POWER = 0.2;      // how hard to push, 0 to 1
-    static final double TOLERANCE = 0.5;        // inches; "close enough, stop"
-    static final double TIMEOUT = 5.0;          // seconds; give up rather than hang forever
+    static final double TOLERANCE = 0.25;        // inches; "close enough, stop"
+    static final double TIMEOUT = 10.0;
+
 
     DcMotor frontLeft, frontRight, backLeft, backRight;
     GoBildaPinpointDriver pinpoint;
@@ -89,8 +91,14 @@ public class AutonPinpoint extends LinearOpMode {
         showPose();
 
         waitForStart();
+        driveTo(LEAVE_X, LEAVE_Y);
+        for (int i = 0; i < 4; i++) {
+            telemetry.addData("Shooting", "x" + (i+1));
+            sleep(1000);
+            telemetry.update();
+        }
+        driveTo(LEAVE_X, -36);
 
-        driveTo(LEAVE_X, LEAVE_Y);   // scores LEAVE
         driveTo(PARK_X, PARK_Y);     // scores PARK
 
         showPose();
