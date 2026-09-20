@@ -41,12 +41,11 @@ import org.firstinspires.ftc.teamcode.sim.SimStart;
 public class AutonPinpoint extends LinearOpMode {
 
     // Where to go, in field coordinates. The only numbers you change to go somewhere else.
-    static final double START_X = -12;          // left side against the red wall
-    static final double START_Y = -63;
+    static final double START_X = 63;          // left side against the red wall
+    static final double START_Y = -12;
     static final double START_HEADING = 180;    // facing -x, along the wall toward the zone
 
-    static final double LEAVE_X = -12;          // move 1: off the wall
-    static final double LEAVE_Y = -59;
+    static final long SHOOTING_WAIT_TIME = 6;
 
     static final double PARK_X = -19;           // move 2: into the loading zone
     static final double PARK_Y = -59;
@@ -89,8 +88,10 @@ public class AutonPinpoint extends LinearOpMode {
         showPose();
 
         waitForStart();
-
-        driveTo(LEAVE_X, LEAVE_Y);   // scores LEAVE
+        telemetry.addLine("Shooting!");
+        telemetry.update();
+        sleep(SHOOTING_WAIT_TIME * 1000);
+        driveTo(36, -36);   // scores LEAVE
         driveTo(PARK_X, PARK_Y);     // scores PARK
 
         showPose();
