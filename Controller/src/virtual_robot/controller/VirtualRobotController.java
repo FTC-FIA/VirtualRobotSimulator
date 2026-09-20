@@ -79,6 +79,7 @@ public class VirtualRobotController {
     @FXML private CheckBox cbxVirtualGamepad;
     @FXML private BorderPane borderPane;
     @FXML private CheckBox cbxShowPath;
+    @FXML private CheckBox cbxBlueView;
     @FXML private CheckBox checkBoxAutoHuman;
     @FXML private Label lblRunTime;
     @FXML private HBox hbxGamePads;
@@ -740,6 +741,34 @@ public class VirtualRobotController {
     private void handleCbxShowPathAction(ActionEvent event){
         if (pathLine == null) return;
         pathLine.setVisible(cbxShowPath.isSelected());
+    }
+
+    /**
+     * Show the field from the blue alliance's side of the wall instead of the red alliance's.
+     *
+     * The UNCHECKED state is the red alliance view, and that is deliberate: the official FTC
+     * field coordinate system is defined from the perspective of someone standing outside the
+     * field at the center of the RED WALL, looking in. So the default view of this simulator is
+     * the view the coordinate system is drawn from -- +x to the right, +y away from the red
+     * wall -- and ticking this box walks around to the blue side, which is a 180 degree turn.
+     *
+     * This is purely a change of CAMERA, not a change of field. Every field coordinate means
+     * exactly what it meant before: the robot is still at the same (x, y), the odometry still
+     * reports the same numbers, and an OpMode cannot tell which way the field is being shown.
+     *
+     * The implementation is one line because everything drawn on the field -- the background
+     * image, the robot, the path line, the game elements -- is a child of fieldPane. Rotating
+     * fieldPane rotates all of it at once.
+     *
+     * Mouse clicks keep working without any adjustment here. JavaFX reports MouseEvent
+     * coordinates in the local coordinate space of the node the handler is attached to, and
+     * that node is fieldPane itself, whose local space is unaffected by its own rotation. So
+     * handleFieldMouseClick below still receives un-rotated coordinates and still puts the
+     * robot where the user clicked.
+     */
+    @FXML
+    private void handleCbxBlueViewAction(ActionEvent event){
+        fieldPane.setRotate(cbxBlueView.isSelected() ? 180.0 : 0.0);
     }
 
     public void updateTelemetryDisplay(String telemetryText) {

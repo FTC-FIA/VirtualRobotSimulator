@@ -18,8 +18,13 @@ import virtual_robot.controller.Game;
  *
  * COORDINATES
  * -----------
- * The dyn4j world used by the simulator has its origin at the CENTER of the field, with +x to
- * the right and +y UP, measured in METERS. Everything below is written in INCHES (which is how
+ * Coordinates follow the official FIRST Tech Challenge field coordinate system, which is drawn
+ * from the RED alliance's point of view: stand outside the field at the center of the RED WALL
+ * and look toward the middle. The origin is at the CENTER of the field, +x runs to your right
+ * and +y runs away from you, out across the field toward the BLUE WALL. So the red wall is the
+ * bottom edge (y = -72), the blue wall is the top edge (y = +72).
+ *
+ * The dyn4j world underneath measures in METERS. Everything below is written in INCHES (which is how
  * the FTC field is specified) and converted with the IN constant, because inches are much easier
  * to reason about when you are comparing against the field drawings.
  *
@@ -41,14 +46,14 @@ public final class BioBuzz extends Game {
         super.initialize();
 
         //          center x, center y,  width, height     (all inches)
-        addObstacle(  -13.95,      0.0,   23.9,   51.0);   // RED HIVE  (left half of center frame)
-        addObstacle(   13.80,      0.0,   22.8,   51.0);   // BLUE HIVE (right half of center frame)
-        addObstacle(    0.20,      0.0,    8.0,   24.0);   // ramps bridging the two hives
+        addObstacle(     0.0,    -13.95,  51.0,   23.9);   // RED HIVE  (red half of center frame)
+        addObstacle(     0.0,     13.80,  51.0,   22.8);   // BLUE HIVE (blue half of center frame)
+        addObstacle(     0.0,      0.20,  24.0,    8.0);   // ramps bridging the two hives
 
-        addObstacle(  -24.00,     68.7,    6.5,    6.5);   // FLOWER, top wall
-        addObstacle(   68.50,     24.0,    6.5,    6.5);   // FLOWER, right wall
-        addObstacle(   23.90,    -68.7,    6.5,    6.5);   // FLOWER, bottom wall
-        addObstacle(  -68.80,    -23.9,    6.5,    6.5);   // FLOWER, left wall
+        addObstacle(   -68.7,    -24.00,   6.5,    6.5);   // FLOWER, left wall
+        addObstacle(   -24.0,     68.50,   6.5,    6.5);   // FLOWER, top wall (blue wall)
+        addObstacle(    68.7,     23.90,   6.5,    6.5);   // FLOWER, right wall
+        addObstacle(    23.9,    -68.80,   6.5,    6.5);   // FLOWER, bottom wall (red wall)
     }
 
     /**
