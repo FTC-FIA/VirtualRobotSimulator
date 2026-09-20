@@ -62,7 +62,7 @@ public class AutonTimedDrive extends LinearOpMode {
 
         // Move 2: forward into the loading zone. This is what scores PARK.
         driveForward(0.2);
-        sleep(600);
+        sleep(610);
         stopDriving();
 
         telemetry.addData("Done", "Off the wall and parked in the loading zone");
