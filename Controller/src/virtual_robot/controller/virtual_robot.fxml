@@ -69,6 +69,11 @@
                         <Insets left="10.0" top="15.0" />
                      </padding>
                   </CheckBox>
+                  <CheckBox fx:id="cbxBlueView" mnemonicParsing="false" onAction="#handleCbxBlueViewAction" text="Blue alliance view">
+                     <padding>
+                        <Insets left="20.0" top="15.0" />
+                     </padding>
+                  </CheckBox>
                </children>
             </HBox>
          </children>
