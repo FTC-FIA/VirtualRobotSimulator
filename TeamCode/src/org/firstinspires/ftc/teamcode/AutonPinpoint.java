@@ -190,5 +190,6 @@ public class AutonPinpoint extends LinearOpMode {
         telemetry.addData("Pose", "x: %.1f  y: %.1f  heading: %.1f",
                 pose.getX(DistanceUnit.INCH),
                 pose.getY(DistanceUnit.INCH),
-                pose.getHeading(AngleUnit.DEGREES));}
+                pose.getHeading(AngleUnit.DEGREES));
+    }
 }
