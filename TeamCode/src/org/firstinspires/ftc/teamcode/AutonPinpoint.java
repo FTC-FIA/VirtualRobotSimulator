@@ -45,20 +45,20 @@ import org.firstinspires.ftc.teamcode.sim.SimStart;
  * The plan never says "forward" or "strafe." Start the robot facing a different way and these same
  * three lines still take it to the same three poses on the field.
  */
-@Autonomous(name = "Auton 2: Pinpoint", group = "BioBuzz")
+@Autonomous(name = "Auton 2: Pinpointlars", group = "BioBuzz")
 public class AutonPinpoint extends LinearOpMode {
 
     // Where to go, in field coordinates. The only numbers you change to go somewhere else.
-    static final double START_X = -12;          // left side against the red wall
-    static final double START_Y = -63;
+    static final double START_X = 63;          // left side against the red wall
+    static final double START_Y = -12;
     static final double START_HEADING = 180;    // facing -x, along the wall toward the zone
 
-    static final double LEAVE_X = -12;          // move 1: straight out from the wall, no turning
-    static final double LEAVE_Y = -48;
-    static final double LEAVE_HEADING = 180;
+    static final double LEAVE_X = 24;          // move 1: straight out from the wall, no turning
+    static final double LEAVE_Y = -56;
+    static final double LEAVE_HEADING = 270;
 
-    static final double TURN_X = -30;           // move 2: drive and turn at the same time
-    static final double TURN_Y = -48;
+    static final double TURN_X = 0;           // move 2: drive and turn at the same time
+    static final double TURN_Y = 0;
     static final double TURN_HEADING = 0;      // end up facing +y, out into the field
 
     static final double PARK_X = -30;           // move 3: down into the loading zone
@@ -66,8 +66,8 @@ public class AutonPinpoint extends LinearOpMode {
     static final double PARK_HEADING = 90;
 
     // How we drive. One speed the whole way, same as the timed version.
-    static final double DRIVE_POWER = 0.2;      // how hard to push, 0 to 1
-    static final double TURN_POWER = 0.2;       // how hard to spin, 0 to 1
+    static final double DRIVE_POWER = 1;      // how hard to push, 0 to 1
+    static final double TURN_POWER = 1;       // how hard to spin, 0 to 1
     static final double TOLERANCE = 0.5;        // inches; "close enough, stop"
     static final double HEADING_TOLERANCE = 3;  // degrees; "pointed close enough, stop turning"
     static final double TIMEOUT = 5.0;          // seconds; give up rather than hang forever
@@ -106,8 +106,11 @@ public class AutonPinpoint extends LinearOpMode {
 
         waitForStart();
 
-        driveTo(LEAVE_X, LEAVE_Y, LEAVE_HEADING);   // out from the wall -- scores LEAVE
-        driveTo(TURN_X, TURN_Y, TURN_HEADING);      // drive and turn together -- the thing to watch
+        driveTo(LEAVE_X, LEAVE_Y, LEAVE_HEADING);
+        sleep(1000);// drive and turn together -- the thing to watch
+        driveTo(START_X,START_Y, START_HEADING);
+        sleep(1000);
+        driveTo(63, -36, START_HEADING);
         driveTo(PARK_X, PARK_Y, PARK_HEADING);      // into the loading zone -- scores PARK
 
         showPose();
