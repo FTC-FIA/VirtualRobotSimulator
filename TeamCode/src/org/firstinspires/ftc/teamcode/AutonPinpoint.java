@@ -20,22 +20,30 @@ import org.firstinspires.ftc.teamcode.sim.SimStart;
  *   FIELD-RELATIVE DRIVING -- the plan is written in field coordinates, and driveFieldRelative()
  *   converts to the robot's own forward/right at the last moment.
  *
- * Watch where it stops: it will NOT be (-19, -59). The robot runs at full DRIVE_POWER right up to
- * the instant the odometry says "close enough," then has to coast. AutonPinpointProportional fixes
- * that; this is the "before" picture.
+ * Watch where it stops: it will NOT be exactly (-30, -59) facing 90. The robot runs at full power
+ * right up to the instant the odometry says "close enough," then has to coast -- in position AND in
+ * heading. A later lesson adds proportional control to fix that; this is the "before" picture.
  *
  * FIELD COORDINATES (official FTC, drawn from the red alliance's side of the field)
  *   origin at field center; x and y each run -72 to +72 inches
  *   +x to your right, +y away from the red wall -- so red wall is y = -72, blue wall is y = +72
  *   heading is degrees counterclockwise from +x:  0 right, 90 up, 180 left, -90 down
  *
- * THE PLAN
+ * THE PLAN -- each move names a spot AND a direction to face
  *   start at (-12, -63) facing 180, left side against the red wall
- *   move 1: go to (-12, -59)  -- 4 inches off the wall, scores LEAVE
- *   move 2: go to (-19, -59)  -- 7 inches into the loading zone, scores PARK
+ *   move 1: go to (-12, -48) facing 180  -- straight out from the wall, scores LEAVE
+ *   move 2: go to (-30, -48) facing  90  -- drives and turns AT THE SAME TIME
+ *   move 3: go to (-30, -59) facing  90  -- back down into the loading zone, scores PARK
+ *
+ * Move 2 is the one to watch. The robot spins a quarter turn while it travels, and because the
+ * steering is field-relative it still crosses the floor in a straight line. The same move steered
+ * robot-relative would curve away as the robot turned.
+ *
+ * Move 1 goes further off the wall than it strictly needs to. That is on purpose: an 18 inch robot
+ * sweeps a 25 inch circle when it spins, so it has to be clear of the wall before move 2 turns it.
  *
  * The plan never says "forward" or "strafe." Start the robot facing a different way and these same
- * two lines still take it to the same two spots on the field.
+ * three lines still take it to the same three poses on the field.
  */
 @Autonomous(name = "Auton 2: Pinpoint", group = "BioBuzz")
 public class AutonPinpoint extends LinearOpMode {
@@ -45,15 +53,23 @@ public class AutonPinpoint extends LinearOpMode {
     static final double START_Y = -63;
     static final double START_HEADING = 180;    // facing -x, along the wall toward the zone
 
-    static final double LEAVE_X = -12;          // move 1: off the wall
-    static final double LEAVE_Y = -59;
+    static final double LEAVE_X = -12;          // move 1: straight out from the wall, no turning
+    static final double LEAVE_Y = -48;
+    static final double LEAVE_HEADING = 180;
 
-    static final double PARK_X = -19;           // move 2: into the loading zone
+    static final double TURN_X = -30;           // move 2: drive and turn at the same time
+    static final double TURN_Y = -48;
+    static final double TURN_HEADING = 0;      // end up facing +y, out into the field
+
+    static final double PARK_X = -30;           // move 3: down into the loading zone
     static final double PARK_Y = -59;
+    static final double PARK_HEADING = 90;
 
     // How we drive. One speed the whole way, same as the timed version.
     static final double DRIVE_POWER = 0.2;      // how hard to push, 0 to 1
+    static final double TURN_POWER = 0.2;       // how hard to spin, 0 to 1
     static final double TOLERANCE = 0.5;        // inches; "close enough, stop"
+    static final double HEADING_TOLERANCE = 3;  // degrees; "pointed close enough, stop turning"
     static final double TIMEOUT = 5.0;          // seconds; give up rather than hang forever
 
     DcMotor frontLeft, frontRight, backLeft, backRight;
@@ -90,20 +106,25 @@ public class AutonPinpoint extends LinearOpMode {
 
         waitForStart();
 
-        driveTo(LEAVE_X, LEAVE_Y);   // scores LEAVE
-        driveTo(PARK_X, PARK_Y);     // scores PARK
+        driveTo(LEAVE_X, LEAVE_Y, LEAVE_HEADING);   // out from the wall -- scores LEAVE
+        driveTo(TURN_X, TURN_Y, TURN_HEADING);      // drive and turn together -- the thing to watch
+        driveTo(PARK_X, PARK_Y, PARK_HEADING);      // into the loading zone -- scores PARK
 
         showPose();
         sleep(3000);
     }
 
     /**
-     * Head for a spot on the field at DRIVE_POWER, and cut the motors once we are close enough.
-     * Full speed, then off, nothing in between -- watching where that leaves the robot is the point.
+     * Go to a spot on the field AND face a given direction. Driving and turning happen together,
+     * each at a fixed power, and each stops on its own once it is close enough.
+     *
+     * Full power, then off, nothing in between -- watching where that leaves the robot is the point.
      */
-    private void driveTo(double targetX, double targetY) {
+    private void driveTo(double targetX, double targetY, double targetHeading) {
 
         ElapsedTime timer = new ElapsedTime();
+        boolean atPosition = false;
+        boolean atHeading = false;
 
         while (opModeIsActive() && timer.seconds() < TIMEOUT) {
 
@@ -117,14 +138,27 @@ public class AutonPinpoint extends LinearOpMode {
             double errorY = targetY - y;
             double distance = Math.hypot(errorX, errorY);
 
+            // Shortest way round: 170 to -170 is a 20 degree turn, not 340.
+            double headingError = AngleUnit.normalizeDegrees(targetHeading - heading);
+
+            // Once we arrive, stay arrived. Without this the robot would chase an overshoot back
+            // and forth across the target until the timeout.
+            if (distance < TOLERANCE) atPosition = true;
+            if (Math.abs(headingError) < HEADING_TOLERANCE) atHeading = true;
+
             showPose();
-            telemetry.addData("Target", "x: %.1f  y: %.1f   (%.1f in away)", targetX, targetY, distance);
+            telemetry.addData("Target", "x: %.1f  y: %.1f  heading: %.1f",
+                    targetX, targetY, targetHeading);
+            telemetry.addData("Error", "%.1f in   %.1f deg", distance, headingError);
             telemetry.update();
 
-            // The whole improvement over the timed version: what we check is our position, not a clock.
-            if (distance < TOLERANCE) break;
+            // The whole improvement over the timed version: what we check is where we are, not a clock.
+            if (atPosition && atHeading) break;
 
-            driveFieldRelative(errorX, errorY, heading, DRIVE_POWER, 0);
+            double power = atPosition ? 0 : DRIVE_POWER;
+            double turn = atHeading ? 0 : TURN_POWER * Math.signum(headingError);
+
+            driveFieldRelative(errorX, errorY, heading, power, turn);
         }
 
         stopDriving();
@@ -139,6 +173,9 @@ public class AutonPinpoint extends LinearOpMode {
      * 2-D rotation. Dividing by the length throws away the distance and keeps only the direction;
      * power decides the speed.
      *
+     * The turn is NOT rotated -- spinning means the same thing in both frames. It just rides along,
+     * which is what lets the robot travel a straight line on the field while it turns.
+     *
      * @param fieldX  x part of the direction to travel, in field coordinates
      * @param fieldY  y part of the direction to travel, in field coordinates
      * @param heading robot's current heading, degrees
@@ -149,8 +186,12 @@ public class AutonPinpoint extends LinearOpMode {
         double h = Math.toRadians(heading);
         double length = Math.hypot(fieldX, fieldY);
 
-        double forward = (fieldX * Math.cos(h) + fieldY * Math.sin(h)) / length;
-        double right = (fieldX * Math.sin(h) - fieldY * Math.cos(h)) / length;
+        double forward = 0;                         // already on the spot? then there is no
+        double right = 0;                           // direction to convert -- just turn
+        if (length > 0) {
+            forward = (fieldX * Math.cos(h) + fieldY * Math.sin(h)) / length;
+            right = (fieldX * Math.sin(h) - fieldY * Math.cos(h)) / length;
+        }
 
         drive(forward * power, right * power, turn);
     }
@@ -190,5 +231,6 @@ public class AutonPinpoint extends LinearOpMode {
         telemetry.addData("Pose", "x: %.1f  y: %.1f  heading: %.1f",
                 pose.getX(DistanceUnit.INCH),
                 pose.getY(DistanceUnit.INCH),
-                pose.getHeading(AngleUnit.DEGREES));}
+                pose.getHeading(AngleUnit.DEGREES));
+    }
 }
