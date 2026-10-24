@@ -45,8 +45,8 @@ import org.firstinspires.ftc.teamcode.sim.SimStart;
  * The plan never says "forward" or "strafe." Start the robot facing a different way and these same
  * three lines still take it to the same three poses on the field.
  */
-@Autonomous(name = "Auton 2: PinpointSecond", group = "BioBuzz")
-public class AutonPinpoint extends LinearOpMode {
+@Autonomous(name = "Auton - Dami", group = "BioBuzz")
+public class AutonDami extends LinearOpMode {
 
     // Where to go, in field coordinates. The only numbers you change to go somewhere else.
     static final double START_X = 63;          // left side against the red wall
@@ -111,7 +111,7 @@ public class AutonPinpoint extends LinearOpMode {
         sleep(1000);
         driveTo(55, 12, 0);
         driveTo(48, 12, 0);
-        sleep(25`00);
+        sleep(250);
         driveTo(48, 48, 0);
         driveTo(PARK_X, PARK_Y, PARK_HEADING);      // into the loading zone -- scores PARK
 
