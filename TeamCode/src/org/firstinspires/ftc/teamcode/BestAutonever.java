@@ -45,7 +45,7 @@ import org.firstinspires.ftc.teamcode.sim.SimStart;
  * The plan never says "forward" or "strafe." Start the robot facing a different way and these same
  * three lines still take it to the same three poses on the field.
  */
-@Autonomous(name = "Auton 2: Pinpointstupid", group = "BioBuzz")
+@Autonomous(name = "Auton - Best Ever", group = "BioBuzz")
 public class BestAutonever extends LinearOpMode {
 
     // Where to go, in field coordinates. The only numbers you change to go somewhere else.

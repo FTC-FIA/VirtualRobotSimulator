@@ -11,41 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.sim.SimStart;
 
-/**
- * RED Autonomous, version 2: the same two moves as AutonTimedDrive, but the robot decides when to
- * stop by looking at WHERE IT IS instead of at a clock.
- *
- * Two ideas:
- *   ODOMETRY -- the Pinpoint tracks the robot's position on the field. Call update(), read the pose.
- *   FIELD-RELATIVE DRIVING -- the plan is written in field coordinates, and driveFieldRelative()
- *   converts to the robot's own forward/right at the last moment.
- *
- * Watch where it stops: it will NOT be exactly (-30, -59) facing 90. The robot runs at full power
- * right up to the instant the odometry says "close enough," then has to coast -- in position AND in
- * heading. A later lesson adds proportional control to fix that; this is the "before" picture.
- *
- * FIELD COORDINATES (official FTC, drawn from the red alliance's side of the field)
- *   origin at field center; x and y each run -72 to +72 inches
- *   +x to your right, +y away from the red wall -- so red wall is y = -72, blue wall is y = +72
- *   heading is degrees counterclockwise from +x:  0 right, 90 up, 180 left, -90 down
- *
- * THE PLAN -- each move names a spot AND a direction to face
- *   start at (-12, -63) facing 180, left side against the red wall
- *   move 1: go to (-12, -48) facing 180  -- straight out from the wall, scores LEAVE
- *   move 2: go to (-30, -48) facing  90  -- drives and turns AT THE SAME TIME
- *   move 3: go to (-30, -59) facing  90  -- back down into the loading zone, scores PARK
- *
- * Move 2 is the one to watch. The robot spins a quarter turn while it travels, and because the
- * steering is field-relative it still crosses the floor in a straight line. The same move steered
- * robot-relative would curve away as the robot turned.
- *
- * Move 1 goes further off the wall than it strictly needs to. That is on purpose: an 18 inch robot
- * sweeps a 25 inch circle when it spins, so it has to be clear of the wall before move 2 turns it.
- *
- * The plan never says "forward" or "strafe." Start the robot facing a different way and these same
- * three lines still take it to the same three poses on the field.
- */
-@Autonomous(name = "Auton 2: Pinpointlars", group = "BioBuzz")
+@Autonomous(name = "Auton 1st Shooter (Lars)", group = "BioBuzz")
 public class AutonPinpointLars extends LinearOpMode {
 
     // Where to go, in field coordinates. The only numbers you change to go somewhere else.
@@ -110,6 +76,8 @@ public class AutonPinpointLars extends LinearOpMode {
         sleep(1000);// drive and turn together -- the thing to watch
         driveTo(START_X,START_Y, START_HEADING);
         sleep(1000);
+
+        // TODO: use variablas for all coordinates of interest
         driveTo(63, -36, START_HEADING);
         driveTo(PARK_X, PARK_Y, PARK_HEADING);      // into the loading zone -- scores PARK
 
