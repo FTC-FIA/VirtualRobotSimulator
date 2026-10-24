@@ -46,7 +46,7 @@ import org.firstinspires.ftc.teamcode.sim.SimStart;
  * three lines still take it to the same three poses on the field.
  */
 @Autonomous(name = "Auton 2: Pinpointlars", group = "BioBuzz")
-public class AutonPinpoint extends LinearOpMode {
+public class AutonPinpointLars extends LinearOpMode {
 
     // Where to go, in field coordinates. The only numbers you change to go somewhere else.
     static final double START_X = 63;          // left side against the red wall
