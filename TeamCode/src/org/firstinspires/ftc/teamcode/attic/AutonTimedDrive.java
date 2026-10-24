@@ -1,30 +1,12 @@
-package org.firstinspires.ftc.teamcode.auton;
+package org.firstinspires.ftc.teamcode.attic;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.sim.SimStart;
 
-/**
- * RED Autonomous: pull away from the wall, then drive into the LOADING ZONE.
- *
- * This scores two things in BIOBUZZ:
- *    LEAVE (3 points) -- at the end of AUTO the robot is not touching the perimeter wall
- *    PARK  (5 points) -- at the end of AUTO the robot is at least partly in the LOADING ZONE
- *
- * Both are checked at the END of the 30 seconds, so the robot has to finish off the wall
- * AND in the zone at the same time.
- *
- * The robot starts with its left side against the red wall, facing the loading zone.
- * Then it makes two moves:
- *    1. strafe right about 4 inches, straight out from the wall
- *    2. drive forward about 7 inches, until it is roughly 3 inches into the zone
- *
- * The moves are timed: turn the motors on, wait, turn them off. There are no encoders and
- * no odometry here. That means the distances are only as good as the timing, which is fine
- * for this -- there are several inches of room for error in both directions.
- */
 @Autonomous(name = "Auton 1: Timed Drive", group = "BioBuzz")
 public class AutonTimedDrive extends LinearOpMode {
 
